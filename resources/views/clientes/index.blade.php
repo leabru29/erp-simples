@@ -121,6 +121,9 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('clientes.index') }}",
+                language: {
+                    url: "{{ asset('js/datatables/pt_br.json') }}"
+                },
                 columns: [{
                         data: 'nome',
                         name: 'nome'
