@@ -5,39 +5,29 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Cliente\StoreClienteRequest;
 use App\Http\Requests\Cliente\UpdateClienteRequest;
 use App\Models\Cliente;
-use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class ClienteController extends Controller
 {
     public function index(): JsonResponse
     {
-        $clientes = Cliente::with('pedidos')
-            ->get()
-            ->map(function ($cliente) {
-                return [
-                    'id' => $cliente->id,
-                    'nome' => $cliente->nome,
-                    'email' => $cliente->email,
-                    'telefone' => $cliente->telefone,
-                    'pedidos' => $cliente->pedidos->map(function ($pedido) {
-                        return [
-                            'id' => $pedido->id,
-                            'produto_id' => $pedido->produto_id,
-                            'quantidade_pedido' => $pedido->quantidade_pedido,
-                            'preco_unitario_pedido' => $pedido->preco_unitario_pedido,
-                            'cupom_valor_pedido' => $pedido->cupom_valor_pedido,
-                        ];
-                    }),
-                ];
-            });
-        return response()->json($clientes);
+        $clientes = Cliente::all();
+        return DataTables::of($clientes)
+            ->addColumn('action', function ($cliente) {
+                return $cliente->id;
+            })
+            ->make(true);
     }
 
     public function store(StoreClienteRequest $request): JsonResponse
     {
-        $dados = $request->validate();
+        $dados = $request->validated();
+        if (empty($dados['senha'])) {
+            $dados['senha'] = Hash::make(Str::random(8));
+        }
         Cliente::create($dados);
         return response()->json(['message' => 'Cliente cadastrado com sucesso'], 201);
     }
@@ -49,7 +39,7 @@ class ClienteController extends Controller
 
     public function update(UpdateClienteRequest $request, Cliente $cliente)
     {
-        $dados = $request->validate();
+        $dados = $request->validated();
         $cliente->update($dados);
         return response()->json(['message' => 'Cliente atualizado com sucesso']);
     }

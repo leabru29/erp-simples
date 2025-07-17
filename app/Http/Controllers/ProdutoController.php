@@ -6,13 +6,23 @@ use App\Http\Requests\Produto\StoreProdutoRequest;
 use App\Http\Requests\Produto\UpdateProdutoRequest;
 use App\Models\Produto;
 use Illuminate\Http\JsonResponse;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProdutoController extends Controller
 {
     public function index(): JsonResponse
     {
-        $produtos = Produto::with('variacoes')->get();
-        return response()->json($produtos);
+        $produtos = Produto::with('variacoes');
+        return DataTables::eloquent($produtos)
+            ->addColumn('variacoes', function ($produto) {
+                return $produto->variacoes->map(function ($v) {
+                    return $v->nome . ' (' . $v->estoque . ')';
+                })->implode('<br>');
+            })
+            ->addColumn('action', function ($produto) {
+                return $produto->id;
+            })
+            ->make(true);
     }
 
     public function store(StoreProdutoRequest $request): JsonResponse

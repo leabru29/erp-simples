@@ -15,9 +15,9 @@ class UpdateClienteRequest extends FormRequest
     {
         return [
             'nome' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:clientes,email',
+            'email' => 'required|email|max:255|unique:clientes,email' . ($this->cliente ? ',' . $this->cliente->id : ''),
             'telefone' => 'required|string|max:20',
-            'senha' => 'required|string|min:8|confirmed',
+            'senha' => 'sometimes|string|min:8|confirmed',
         ];
     }
 }

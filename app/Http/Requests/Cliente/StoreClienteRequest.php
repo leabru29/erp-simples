@@ -16,8 +16,8 @@ class StoreClienteRequest extends FormRequest
         return [
             'nome' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:clientes,email',
-            'telefone' => 'required|string|max:20',
-            'senha' => 'required|string|min:8|confirmed',
+            'telefone' => 'required|celular_com_ddd',
+            'senha' => 'sometimes|string|min:8|confirmed',
         ];
     }
 }
