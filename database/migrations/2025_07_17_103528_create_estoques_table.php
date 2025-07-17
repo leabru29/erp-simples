@@ -14,12 +14,7 @@ return new class () extends Migration {
                   ->constrained('produtos')
                   ->onUpdate('cascade')
                   ->onDelete('set null');
-            $table->integer('quantidade');
-            $table->foreignId('variacao_id')
-                    ->nullable()
-                    ->constrained('variacoes')
-                    ->onUpdate('cascade')
-                    ->onDelete('set null');
+            $table->integer('quantidade')->default(0);
             $table->timestamps();
         });
     }

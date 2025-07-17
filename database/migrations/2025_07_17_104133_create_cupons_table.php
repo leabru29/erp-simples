@@ -10,9 +10,10 @@ return new class () extends Migration {
         Schema::create('cupons', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->unique();
-            $table->decimal('desconto', 10, 2);
-            $table->dateTime('data_expiracao')->nullable();
-            $table->boolean('ativo')->default(true);
+            $table->decimal('valor_desconto', 10, 2);
+            $table->enum('tipo', ['percentual', 'valor'])->default('valor');
+            $table->decimal('valor_minimo', 10, 2)->default(0);
+            $table->timestamp('validade')->nullable();
             $table->timestamps();
         });
     }

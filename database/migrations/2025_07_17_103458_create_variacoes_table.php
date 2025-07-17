@@ -9,8 +9,9 @@ return new class () extends Migration {
     {
         Schema::create('variacoes', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            $table->decimal('preco', 10, 2);
+            $table->string('nome_variacao');
+            $table->decimal('preco_variacao', 10, 2);
+            $table->integer('quantidade_variacao')->default(0);
             $table->foreignId('produto_id')
                   ->constrained('produtos')
                   ->onUpdate('cascade')
