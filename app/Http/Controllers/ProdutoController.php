@@ -46,7 +46,7 @@ class ProdutoController extends Controller
 
     public function show(Produto $produto): JsonResponse
     {
-        $produto->load('variacoes');
+        $produto->load('variacoes', 'estoque');
         return response()->json($produto);
     }
 

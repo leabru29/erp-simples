@@ -65,6 +65,42 @@
         </div>
     </div>
 
+
+    <div class="modal fade" id="modalCarrinho" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="formAddCarrinho">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Adicionar ao Carrinho</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="produto_id" name="produto_id">
+
+                        <div class="mb-3">
+                            <label>Produto</label>
+                            <input type="text" id="produto_nome" class="form-control" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Quantidade</label>
+                            <input type="number" name="quantidade_carrinho_produto" class="form-control" min="1"
+                                value="1">
+                        </div>
+
+                        <!-- Variações se houver -->
+                        <div id="opcoes_variacoes"></div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Adicionar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     @include('produtos/modals/modal-adicionar-produto')
     @include('produtos/modals/modal-editar-produto')
     @include('produtos/modals/modal-adicionar-variacao')
@@ -127,8 +163,8 @@
                             let id = data;
 
                             return `
-                                    <button class="btn btn-sm btn-success btn-visualizar" data-id="${id}" title="Visualizar">
-                                        <i class="fa fa-eye"></i>
+                                    <button class="btn btn-sm btn-warning btn-comprar-produto" data-id="${id}" title="Comprar">
+                                        <i class="fas fa-cart-plus"></i>
                                     </button>
                                     <button class="btn btn-sm btn-primary btn-editar" data-id="${id}" title="Editar">
                                         <i class="fa fa-edit"></i>
@@ -330,6 +366,31 @@
                     });
                 }
             });
+        });
+
+        $(document).on('click', '.btn-comprar-produto', function() {
+            const id = $(this).data('id');
+            const form = $('#formAddCarrinho');
+            $.get(`api/produtos/${id}`, function(res) {
+                $(form).find('#produto_id').val(res.id);
+                $(form).find('#produto_nome').val(res.nome);
+                $(form).find('#quantidade_carrinho_produto').attr('max', res.estoque
+                    .quantidade_estoque_produto);
+                let html = '';
+                if (res.variacoes && res.variacoes.length > 0) {
+                    html += `<label>Variações</label><select name="variacao_id" class="form-control">`;
+                    res.variacoes.forEach(v => {
+                        html +=
+                            `<option value="${v.id}">${v.nome_variacao} - R$ ${parseFloat(v.preco_variacao).toFixed(2)} - Estoque: ${v.quantidade_variacao}</option>`;
+                    });
+                    html += `</select>`;
+                } else {
+                    html = '<div class="text-muted">Este produto não possui variações.</div>';
+                }
+                $(form).find('#opcoes_variacoes').html(html);
+            });
+
+            $('#modalCarrinho').modal('show');
         });
     </script>
 @stop
