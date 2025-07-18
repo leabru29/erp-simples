@@ -11,8 +11,7 @@ class ProdutoControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function deve_cadastrar_produto_com_variacoes_e_estoque()
+    public function test_deve_cadastrar_produto_com_variacoes_e_estoque()
     {
         $dados = [
                 'nome' => 'Camiseta Slim',
