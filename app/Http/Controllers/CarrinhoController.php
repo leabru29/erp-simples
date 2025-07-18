@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Http;
 
 class CarrinhoController extends Controller
 {
+    public function index()
+    {
+        $itens = session('carrinho', []);
+        ;
+        return view('carrinho.index', compact('itens'));
+    }
+
     public function adicionarProdutoAoCarrinho(Request $request)
     {
         $produtoId = $request->input('produto_id');
@@ -59,5 +66,30 @@ class CarrinhoController extends Controller
             'desconto' => $desconto,
             'total' => max($total, 0),
         ]);
+    }
+
+    public function remover($id)
+    {
+        $carrinho = session()->get('carrinho', []);
+
+        if (isset($carrinho[$id])) {
+            unset($carrinho[$id]);
+            session()->put('carrinho', $carrinho);
+        }
+
+        return redirect()->route('carrinho.index')->with('success', 'Produto removido.');
+    }
+
+    public function aplicarCupom(Request $request)
+    {
+        $cupom = $request->cupom;
+
+        if ($cupom === 'DESCONTO10') {
+            session()->put('cupom', ['codigo' => $cupom, 'desconto' => 10.00]);
+        } else {
+            session()->forget('cupom');
+        }
+
+        return redirect()->route('carrinho.index');
     }
 }

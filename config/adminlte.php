@@ -311,6 +311,16 @@ return [
             'icon' => 'fab fa-product-hunt',
         ],
         [
+            'text' => 'Carrinho',
+            'route'  => 'carrinho.index',
+            'icon' => 'fas fa-shopping-cart',
+        ],
+        [
+            'text' => 'Cupons',
+            'url'  => 'cupons',
+            'icon' => 'fas fa-tags',
+        ],
+        [
             'text' => 'Clientes',
             'route' => 'cliente.index',
             'icon' => 'fab fa-product-hunt',

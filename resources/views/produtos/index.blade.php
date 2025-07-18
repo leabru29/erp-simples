@@ -392,5 +392,31 @@
 
             $('#modalCarrinho').modal('show');
         });
+
+        $(document).on('submit', '#formAddCarrinho', function(e) {
+            e.preventDefault();
+
+            let formData = {
+                produto_id: $('#produto_id').val(),
+                quantidade: $('input[name="quantidade_carrinho_produto"]').val(),
+                variacao_id: $('input[name="variacao_id"]:checked').val() || null, // se houver variações
+            };
+
+            $.ajax({
+                url: '/api/carrinho/adicionar',
+                method: 'POST',
+                data: formData,
+                success: function(res) {
+                    Swal.fire('Sucesso', res.message, 'success');
+                    $('#modalCarrinho').modal('hide');
+                    // Atualizar visual do carrinho, se desejar
+                },
+                error: function(xhr) {
+                    let errors = xhr.responseJSON?.errors || {};
+                    let errorMsg = Object.values(errors).join('<br>');
+                    Swal.fire('Erro', errorMsg || 'Erro ao adicionar ao carrinho.', 'error');
+                }
+            });
+        });
     </script>
 @stop
