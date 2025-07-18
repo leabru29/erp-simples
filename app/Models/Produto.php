@@ -20,4 +20,9 @@ class Produto extends Model
     {
         return $this->hasMany(Variacao::class);
     }
+
+    public function estoque()
+    {
+        return $this->hasOne(Estoque::class);
+    }
 }

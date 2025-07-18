@@ -6,6 +6,7 @@ use App\Http\Requests\Produto\StoreProdutoRequest;
 use App\Http\Requests\Produto\UpdateProdutoRequest;
 use App\Models\Produto;
 use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 use Yajra\DataTables\Facades\DataTables;
 
 class ProdutoController extends Controller
@@ -16,8 +17,15 @@ class ProdutoController extends Controller
         return DataTables::eloquent($produtos)
             ->addColumn('variacoes', function ($produto) {
                 return $produto->variacoes->map(function ($v) {
-                    return $v->nome . ' (' . $v->estoque . ')';
-                })->implode('<br>');
+                    return [
+                        'nome' => $v->nome_variacao,
+                        'preco' => $v->preco_variacao,
+                        'estoque' => $v->quantidade_variacao,
+                    ];
+                });
+            })
+            ->addColumn('estoque', function ($produto) {
+                return optional($produto->estoque)->quantidade_estoque_produto ?? 0;
             })
             ->addColumn('action', function ($produto) {
                 return $produto->id;
@@ -27,8 +35,12 @@ class ProdutoController extends Controller
 
     public function store(StoreProdutoRequest $request): JsonResponse
     {
-        $dados = $request->validated();
-        Produto::create($dados);
+        $dadosProduto = $request->only(['nome', 'preco']);
+        $produto = Produto::create($dadosProduto);
+        $produto->estoque()->create([
+            'produto_id' => $produto->id,
+            'quantidade_estoque_produto' => $request->input('quantidade_estoque_produto')
+        ]);
         return response()->json(['message' => 'Produto cadastrado com sucesso'], 201);
     }
 
@@ -49,5 +61,11 @@ class ProdutoController extends Controller
     {
         $produto->delete();
         return response()->json(['message' => 'Produto excluído com sucesso']);
+    }
+
+    public function viewProdutos(): View
+    {
+        $produtos = Produto::all();
+        return view('produtos.index', compact('produtos'));
     }
 }

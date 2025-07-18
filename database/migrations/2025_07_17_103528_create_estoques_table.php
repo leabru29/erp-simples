@@ -14,7 +14,7 @@ return new class () extends Migration {
                   ->constrained('produtos')
                   ->onUpdate('cascade')
                   ->onDelete('set null');
-            $table->integer('quantidade')->default(0);
+            $table->integer('quantidade_estoque_produto')->default(0);
             $table->timestamps();
         });
     }
