@@ -23,21 +23,21 @@ class CupomController extends Controller
             'message' => 'Cupom cadastrado com sucesso'], 201);
     }
 
-    public function show(Cupom $cupom): JsonResponse
+    public function show(Cupom $cupon): JsonResponse
     {
-        return response()->json($cupom);
+        return response()->json($cupon);
     }
 
-    public function update(UpdateCupomRequest $request, Cupom $cupom): JsonResponse
+    public function update(UpdateCupomRequest $request, Cupom $cupon): JsonResponse
     {
         $dados = $request->validated();
-        $cupom->update($dados);
+        $cupon->update($dados);
         return response()->json(['message' => 'Cupom atualizado com sucesso']);
     }
 
-    public function destroy(Cupom $cupom): JsonResponse
+    public function destroy(Cupom $cupon): JsonResponse
     {
-        $cupom->delete();
+        $cupon->delete();
         return response()->json(['message' => 'Cupom excluído com sucesso']);
     }
 }

@@ -4,20 +4,16 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cupom>
- */
 class CupomFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'codigo' => $this->faker->unique()->word,
+            'valor_desconto' => $this->faker->randomFloat(2, 1, 100),
+            'tipo' => $this->faker->randomElement(['percentual', 'valor']),
+            'valor_minimo' => $this->faker->randomFloat(2, 0, 100),
+            'validade' => $this->faker->dateTimeBetween('now', '+1 month')->format('Y-m-d'),
         ];
     }
 }

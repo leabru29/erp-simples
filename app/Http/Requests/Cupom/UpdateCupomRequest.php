@@ -14,9 +14,9 @@ class UpdateCupomRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'codigo' => 'required|string|max:255|unique:cupons,codigo,' . $this->cupom->id,
+            'codigo' => 'required|string|max:255|unique:cupons,codigo,' . $this->cupom,
             'valor_desconto' => 'required|numeric|min:0',
-            'tipo' => 'required|in:percentual,valor_fixo',
+            'tipo' => 'required|in:percentual,valor',
             'valor_minimo' => 'nullable|numeric|min:0',
             'validade' => 'required|date|after_or_equal:today',
         ];
